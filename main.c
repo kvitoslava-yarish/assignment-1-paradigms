@@ -7,9 +7,7 @@ char* get_text_input(void);
 void append_text(void);
 void start_new_line(void);
 void save_text_to_file(void);
-// void save_text_to_file(void);
 // void load_from_file(void);
-int first_input = 1;
 dynamic_array* d_array;
 
 int main() {
@@ -17,7 +15,7 @@ int main() {
     d_array = create_dynamic_array(10 * sizeof(char*));
     while(1)
     {
-        printf("\nChoose action \n 1 - Append text \n 2 - Start new line \n 3 - Load to file \n 4 - Load from file \n 5 - Display text to console \n 6 - Paste at index \n 7 - Search occurences of a substring\n");
+        printf("\nChoose action \n 1 - Append text \n 2 - Start new line \n 3 - Load to file \n 4 - Load from file \n 5 - Display text to console \n 6 - Paste at index \n 7 - Search occurrences of a substring\n");
         int choice;
         scanf("%d", &choice);
         getchar();
@@ -60,7 +58,7 @@ char* get_text_input(void)
         if(index > size / sizeof(char) - 1)
         {
             size = size * 2;
-            text = (char*)realloc(text, size);
+            text = (char*) realloc(text, size);
         }
         text[index] = symbol;
         index++;

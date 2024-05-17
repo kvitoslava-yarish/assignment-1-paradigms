@@ -1,0 +1,1 @@
+CMakeLists.txt not found in C:\Users\kvita\paradigms_2024\assignment-1-paradigms Select CMakeLists.txt
