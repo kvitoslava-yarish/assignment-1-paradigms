@@ -7,8 +7,9 @@ typedef struct {
     int capacity;
 } dynamic_array;
 
-dynamic_array* create_array(int initial_capacity);
-void insert_line(dynamic_array *container, char *line);
-void free_array(dynamic_array *container);
+dynamic_array* create_dynamic_array(int initial_capacity);
+void insert_line(dynamic_array *d_array);
+void append_to_line(dynamic_array *d_array, char *text);
+void print_array(dynamic_array *d_array);
 
 #endif

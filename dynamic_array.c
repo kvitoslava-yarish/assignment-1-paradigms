@@ -23,21 +23,20 @@ dynamic_array* create_dynamic_array(int initial_capacity)
     return d_array;
 }
 
-void insert_line(dynamic_array *d_array, char *line)
+void insert_line(dynamic_array *d_array)
 {
+    int initial_line_size;
     if(d_array->size == d_array -> capacity)
     {
         d_array -> capacity  = d_array -> capacity * 2;
         d_array ->array = (char **)realloc(d_array ->array, d_array -> capacity * sizeof(char *));
     }
 
-    d_array->array[d_array->size] = (char *)malloc((strlen(line) + 1) * sizeof(char));
+    d_array->array[d_array->size] = (char *)malloc(initial_line_size * sizeof(char));
     if (!d_array->array[d_array->size]) {
         printf("Memory allocation failed\n");
         exit(1);
     }
-
-    strcpy(d_array->array[d_array->size], line);
     d_array->size++;
 }
 
@@ -53,8 +52,7 @@ void print_array(dynamic_array *d_array)
 { 
     for(int i = 0; i < d_array -> size; i++)
     {
-        printf("%s", d_array -> array[i]);
-        printf("\n");
+        printf("%s\n", d_array -> array[i]);
     }
 
 }

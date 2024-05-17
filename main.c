@@ -1,21 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "dynamic_array.h"
 
 char* get_text_input(void);
-void resize_text(int lenght);
-void append_text(char *);
+void append_text(void);
 void start_new_line(void);
 void save_text_to_file(void);
-void load_from_file(void);
-int text_size;
-int storage_left;
-char* text;
+// void save_text_to_file(void);
+// void load_from_file(void);
 int first_input = 1;
+dynamic_array* d_array;
 
 int main() {
-    text_size = 100;
-    storage_left = 100;
+    fflush(stdin);
+    d_array = create_dynamic_array(10 * sizeof(char*));
     while(1)
     {
         printf("\nChoose action \n 1 - Append text \n 2 - Start new line \n 3 - Load to file \n 4 - Load from file \n 5 - Display text to console \n 6 - Paste at index \n 7 - Search occurences of a substring\n");
@@ -25,8 +24,7 @@ int main() {
         switch(choice)
         {
             case 1:
-            printf("%s", "Enter text to append: ");
-            append_text(get_text_input());
+            append_text();
             continue;
             case 2:
             start_new_line();
@@ -35,10 +33,9 @@ int main() {
             save_text_to_file();
             continue;
             case 4:
-            load_from_file();
             continue;
             case 5:
-            printf("%s", text);
+            print_array(d_array);
             continue;
             case 6:
             case 7:
@@ -74,41 +71,17 @@ char* get_text_input(void)
     return text;
 }
 
-void resize_text_storage(int lenght)
+
+void append_text(void)
 {
-    while(lenght * sizeof(char) > storage_left)
-    {
-        storage_left = storage_left + text_size;
-        text_size = text_size * 2;
-        text = (char*)realloc(text, text_size);
-    }
-    storage_left -= lenght * sizeof(char);
+    printf("%s", "Enter text to append: ");
+    append_to_line(d_array, get_text_input());
 }
 
-void append_text(char* entered_text)
-{
-    if (first_input) {
-        text_size = strlen(entered_text) + 1;
-        text = (char *)malloc(text_size * sizeof(char));
-        if (text == NULL) {
-            perror("Unable to allocate memory");
-            exit(EXIT_FAILURE);
-        }
-        strcpy(text, entered_text);
-        first_input = 0;
-    } 
-    else 
-    {
-        resize_text_storage(strlen(entered_text) + 1);
-        strcat(text, entered_text);
-    }
-}
 
 void start_new_line(void)
 {
-    resize_text_storage(strlen("\n"));
-    strcat(text, "\n");
-    printf("%s", "New line added");
+    insert_line(d_array);
 }
 
 void save_text_to_file(void)
@@ -123,11 +96,14 @@ void save_text_to_file(void)
         printf("Not able to open the file.");
         return;
     }
-    fprintf(file, text);
+    for(int i = 0; i < d_array -> size; i++)
+    {
+        fprintf(file, "%s\n", d_array->array[i]);
+    }
     fclose(file);
     printf(" Text has been saved successfully");
 }
-
+/*
 void load_from_file(void)
 {
     printf("Enter the file name to load from:");
@@ -153,3 +129,4 @@ void load_from_file(void)
 
     fclose(file); 
 }
+*/
