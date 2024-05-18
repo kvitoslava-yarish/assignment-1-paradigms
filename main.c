@@ -7,7 +7,8 @@ char* get_text_input(void);
 void append_text(void);
 void start_new_line(void);
 void save_text_to_file(void);
-// void load_from_file(void);
+void load_from_file(void);
+void paste_at_index(void);
 dynamic_array* d_array;
 
 int main() {
@@ -15,6 +16,7 @@ int main() {
     d_array = create_dynamic_array(10 * sizeof(char*));
     while(1)
     {
+        fflush(stdin);
         printf("\nChoose action \n 1 - Append text \n 2 - Start new line \n 3 - Load to file \n 4 - Load from file \n 5 - Display text to console \n 6 - Paste at index \n 7 - Search occurrences of a substring\n");
         int choice;
         scanf("%d", &choice);
@@ -31,11 +33,14 @@ int main() {
             save_text_to_file();
             continue;
             case 4:
+            load_from_file();
             continue;
             case 5:
             print_array(d_array);
             continue;
             case 6:
+            paste_at_index();
+            continue;
             case 7:
             default:
             printf("%s", "enter proper command");
@@ -99,32 +104,65 @@ void save_text_to_file(void)
         fprintf(file, "%s\n", d_array->array[i]);
     }
     fclose(file);
-    printf(" Text has been saved successfully");
+    free(file_path);
+    perror(" Text has been saved successfully");
 }
-/*
-void load_from_file(void)
-{
-    printf("Enter the file name to load from:");
-    FILE * file;
-    char* file_path;
-    file_path = get_text_input();
-    file = fopen(file_path, "r");
+void load_from_file(void) {
+    printf("Enter the file name to load from: ");
+    char* file_path = get_text_input();
+    FILE* file = fopen(file_path, "r");
+    if (!file) {
+        perror("Not able to open the file.\n");
+        free(file_path);
+        return;
+    }
+    int line_size = 100;
+    char *line = malloc(line_size);
+    char chunk[100];
+    if (line == NULL) {
+        perror("Unable to allocate memory for the line buffer");
+    }
+    line[0] = '\0';
 
-    if(file != NULL) 
-    {
-        char text[100];
-        while(fgets(text, 100, file)) 
-        {
-            append_text(text);
-            text[0] = '\0';
+    while (fgets(chunk, sizeof(chunk), file)) {
+        if (line_size - strlen(line) < sizeof(chunk)) {
+            line_size *= 2;
+            char *temp = realloc(line, line_size);
+            if (temp == NULL) {
+                perror("Unable to reallocate memory for the line buffer");
+                free(line);
+            }
+            line = temp;
+        }
+        strcat(line, chunk);
+        if (line[strlen(line) - 1] == '\n') {
+            line[strlen(line) - 1] = '\0'; 
+            insert_line(d_array);
+            append_to_line(d_array, line);
+            line[0] = '\0';
         }
     }
-     
-    else 
-    {
-        printf("Not able to open the file.");
+    if (strlen(line) > 0) { 
+        insert_line(d_array);
+        append_to_line(d_array, line);
     }
-
-    fclose(file); 
+    free(line);
+    fclose(file);
+    free(file_path);
 }
-*/
+
+void paste_at_index(void)
+{
+    printf("Enter index:");
+    int row;
+    int column;
+    if (scanf("%d %d", &row, &column) != 2 || row < 0 || column < 0) 
+    {
+        printf("Invalid index");
+    }
+    // else
+    // {
+    //     if(d_array)
+    // }
+
+}
